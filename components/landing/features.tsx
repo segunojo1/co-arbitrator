@@ -107,7 +107,7 @@ const Features = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-4 border border-[#F0F0F0] absolute bg-white -right-[263px] -bottom-[94px]">
+        <div className="grid grid-cols-4 border border-[#F0F0F0] absolute bg-white -right-[233px] -bottom-[94px]">
           <ClienteItem logo="/assets/lcia.svg" />
           <ClienteItem logo="/assets/gar.svg" w={116} h={20} />
           <ClienteItem logo="/assets/lcia.svg" />
