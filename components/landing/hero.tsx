@@ -4,7 +4,7 @@ import { Button } from "../ui/button";
 
 const Hero = () => {
   return (
-    <div className="bg-[url(/assets/hero_bg.png)] relative bg-cover bg-center flex flex-col justify-start items-center px-10 pt-[255px] min-h-screen h-full">
+    <div className="bg-[url(/assets/hero_bg.png)] text-white relative bg-cover bg-center flex flex-col justify-start items-center px-10 pt-[255px] min-h-screen h-full">
       <div className="font-instrument-serif text-center text-[58px]/[66.7px] font-normal -tracking-[3px] mb-[18px]">
         <h1>Co-Arbitrator</h1>
         <span className="flex items-center">
