@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 const Navbar = () => {
   return (
@@ -7,13 +8,21 @@ const Navbar = () => {
         <li className="mr-3">
           <Image src="/assets/logo.png" alt="Logo" width={135} height={26} />
         </li>
-        <li className="pt-[9.5px] pr-[11.3px] pb-[10.5px] pl-[12px] mr-1" >Features</li>
-        <li className="pt-[9.5px] pr-[11.3px] pb-[10.5px] pl-[12px]" >Resources</li>
+        <li className="pt-[9.5px] pr-[11.3px] pb-[10.5px] pl-[12px] mr-1">
+          Features
+        </li>
+        <li className="pt-[9.5px] pr-[11.3px] pb-[10.5px] pl-[12px]">
+          Resources
+        </li>
       </ul>
 
       <div className="gap-[14px] flex items-center ">
-        <button className="text-[14px]/[20px] -tracking-[0.5px] font-normal pt-[9.5px] pr-[8.38px] pb-[10.5px] pl-[9.62px] rounded-lg bg-[#FFFFFF5C]">Smart Match Arbitrator</button>
-        <button className="text-[14px]/[20px] bg-white text-black font-medium rounded-lg py-[10px] pr-[31.5px] pl-[28.6px]">Sign Up</button> 
+        <button className="text-[14px]/[20px] -tracking-[0.5px] font-normal pt-[9.5px] pr-[8.38px] pb-[10.5px] pl-[9.62px] rounded-lg bg-[#FFFFFF5C]">
+          <Link href="/dashboard">Smart Match Arbitrator</Link>
+        </button>
+        <button className="text-[14px]/[20px] bg-white text-black font-medium rounded-lg py-[10px] pr-[31.5px] pl-[28.6px]">
+          Sign Up
+        </button>
       </div>
     </nav>
   );
