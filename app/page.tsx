@@ -2,6 +2,7 @@ import Analytics from "@/components/landing/analytics";
 import Cliente from "@/components/landing/cliente";
 import FAQ from "@/components/landing/FAQ";
 import Features from "@/components/landing/features";
+import Footer from "@/components/landing/footer";
 import Hero from "@/components/landing/hero";
 import WhyCoArbiter from "@/components/landing/why-coarbiter";
 import Navbar from "@/components/ui/navbar";
@@ -16,6 +17,7 @@ export default function Home() {
       <Features />
       <Analytics />
       <FAQ />
+      <Footer />
     </div>
   );
 }
