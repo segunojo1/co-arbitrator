@@ -1,12 +1,12 @@
-"use client"
+"use client";
 
-import { ChevronRight, type LucideIcon } from "lucide-react"
+import { ChevronRight, type LucideIcon } from "lucide-react";
 
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@/components/ui/collapsible"
+} from "@/components/ui/collapsible";
 import {
   SidebarGroup,
   SidebarGroupLabel,
@@ -17,34 +17,34 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
-} from "@/components/ui/sidebar"
-import Image from "next/image"
+} from "@/components/ui/sidebar";
+import Image from "next/image";
+import clsx from "clsx";
 
 export function NavMain({
   items,
 }: {
   items: {
-    title: string
-    url: string
-    icon: LucideIcon
-    isActive?: boolean
+    title: string;
+    url: string;
+    icon: LucideIcon;
+    isActive?: boolean;
     items?: {
-      title: string
-      url: string
-    }[]
-  }[]
+      title: string;
+      url: string;
+    }[];
+  }[];
 }) {
   return (
     <SidebarGroup>
-      <SidebarGroupLabel>Platform</SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item) => (
           <Collapsible key={item.title} asChild defaultOpen={item.isActive}>
             <SidebarMenuItem>
-              <SidebarMenuButton asChild tooltip={item.title}>
-                <a href={item.url}>
-<Image src={item.icon} alt="icon" width={20} height={20} />
-                  <span>{item.title}</span>
+              <SidebarMenuButton className={clsx("hover:bg-[#A684FF] hover:text-white py-3 px-4 h-full", {"bg-[#A684FF] text-white": item.isActive})} asChild tooltip={item.title}>
+                <a href={item.url} className="gap-3">
+                  <Image src={item.icon} alt="icon" width={20} height={20} />
+                  <span className={item.isActive ? "text-[15px]/[20px] font-semibold -tracking-[.5px]" : "text-[15px]/[20px] -tracking-[.24px]"}>{item.title}</span>
                 </a>
               </SidebarMenuButton>
               {item.items?.length ? (
@@ -75,5 +75,5 @@ export function NavMain({
         ))}
       </SidebarMenu>
     </SidebarGroup>
-  )
+  );
 }
