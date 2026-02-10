@@ -4,6 +4,7 @@ import Image from "next/image";
 import SmartChat from "../_components/smartchat";
 import { useEffect, useState } from "react";
 import useAppStore from "@/store/app-store";
+import FoundMatch from "../_components/foundmatch";
 
 const SmartMatcher = () => {
   const [started, setStarted] = useState(false);
@@ -11,6 +12,8 @@ const SmartMatcher = () => {
   useEffect(() => {
     console.log(followIndex);
   }, [followIndex]);
+
+    const [arbitratorResponse, setArbitratorResponse] = useState("");
 
   return (
     <div className="min-h-screen w-full flex flex-row font-sans bg-white">
@@ -23,57 +26,63 @@ const SmartMatcher = () => {
 
         <div className="flex-1 px-12 py-24 flex flex-col relative">
           <div className="max-w-2xl flex flex-col justify-between h-full mt-10">
-            <div className="">
-              <h1 className="font-instrument-serif text-[58px]/[66px] font-normal -tracking-[3px] mb-4">
-                Smart Matcher for
-                <span className="inline-flex items-center mx-3 align-middle">
-                  <Image
-                    src="/assets/law_icon.png"
-                    alt="Hero Logo"
-                    width={55.15}
-                    height={55.15}
-                  />
-                </span>
-                Parties
-              </h1>
-
-              <p className="text-[#00000099] font-inter text-[18px]/[28px] -tracking-[.5px] max-w-lg mb-20">
-                Resolve dispute faster with AI-Assisted Arbitration. Transform
-                dispute resolution with cutting-edge AI technology. Fast, fair,
-                and transparent arbitration for the modern world.
-              </p>
-
-              {followIndex !== null && (
-                <ul className="flex flex-col">
-                  <li className="flex gap-[7px]">
+            {followIndex == null || followIndex < 4 ? (
+              <div className="">
+                <h1 className="font-instrument-serif text-[58px]/[66px] font-normal -tracking-[3px] mb-4">
+                  Smart Matcher for
+                  <span className="inline-flex items-center mx-3 align-middle">
                     <Image
-                      src="/assets/ai.svg"
-                      alt="ai"
-                      width={32}
-                      height={32}
+                      src="/assets/law_icon.png"
+                      alt="Hero Logo"
+                      width={55.15}
+                      height={55.15}
                     />
-                    <p className="font-bold text-[20px]/[35px] -tracking-[.5px]">
-                      Collating Responses (Data)
-                    </p>
-                  </li>
-                  <li className="flex gap-[7px]">
-                    <p className="ml-[39px] font-bold text-[20px]/[35px] -tracking-[.5px] text-[#9E9E9E]">
-                      Smart Matching
-                    </p>
-                  </li>
-                  <li className="flex gap-[7px]">
-                    <p className="ml-[39px] font-bold text-[20px]/[35px] -tracking-[.5px] text-[#9E9E9E]">
-                      Verifying
-                    </p>
-                  </li>
-                  <li className="flex gap-[7px]">
-                    <p className="ml-[39px] font-bold text-[20px]/[35px] -tracking-[.5px] text-[#9E9E9E]">
-                      Synthesising
-                    </p>
-                  </li>
-                </ul>
-              )}
-            </div>
+                  </span>
+                  Parties
+                </h1>
+
+                <p className="text-[#00000099] font-inter text-[18px]/[28px] -tracking-[.5px] max-w-lg mb-20">
+                  Resolve dispute faster with AI-Assisted Arbitration. Transform
+                  dispute resolution with cutting-edge AI technology. Fast,
+                  fair, and transparent arbitration for the modern world.
+                </p>
+
+                {followIndex !== null && (
+                  <ul className="flex flex-col">
+                    <li className="flex gap-[7px]">
+                      <Image
+                        src="/assets/ai.svg"
+                        alt="ai"
+                        width={32}
+                        height={32}
+                      />
+                      <p className="font-bold text-[20px]/[35px] -tracking-[.5px]">
+                        Collating Responses (Data)
+                      </p>
+                    </li>
+                    <li className="flex gap-[7px]">
+                      <p className="ml-[39px] font-bold text-[20px]/[35px] -tracking-[.5px] text-[#9E9E9E]">
+                        Smart Matching
+                      </p>
+                    </li>
+                    <li className="flex gap-[7px]">
+                      <p className="ml-[39px] font-bold text-[20px]/[35px] -tracking-[.5px] text-[#9E9E9E]">
+                        Verifying
+                      </p>
+                    </li>
+                    <li className="flex gap-[7px]">
+                      <p className="ml-[39px] font-bold text-[20px]/[35px] -tracking-[.5px] text-[#9E9E9E]">
+                        Synthesising
+                      </p>
+                    </li>
+                  </ul>
+                )}
+              </div>
+            ) : (
+                <>
+                </>
+            )}
+            {followIndex == 4 && <FoundMatch response={arbitratorResponse} />}
 
             {followIndex == null && (
               <div>

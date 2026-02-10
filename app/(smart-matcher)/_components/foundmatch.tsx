@@ -2,13 +2,13 @@ import { Button } from "@/components/ui/button"
 import { ChevronDown } from "lucide-react"
 import Image from "next/image"
 
-const FoundMatch = () => {
+const FoundMatch = ({response}: any) => {
   return (
     <div className="flex flex-col space-y-[43px] gap-[43px]">
-        <div className="p-[23px] rounded-[28px]">
-            <div className="w-[150px] h-[150px] rounded-[28px] bg-[#D9D9D9]" />
+        <div className="p-[23px] rounded-[28px] flex items-end">
+            <div className="w-[150px] h-[150px] rounded-[28px] bg-[#D9D9D9] mr-[15px]" />
 
-            <div>
+            <div className="mr-[36px]">
                 <h1 className="text-[32px]/[54px] -tracking-[.5px] font-instrument-serif">Sunita Shekhawat&apos;s</h1>
                 <p className="text-[14px]/[25px] font-medium text-[#0A0A0AB2] -tracking-[.7px]">Arbitrator</p>
                 <h2 className="text-[#0A0A0AB2] text-[15px]/[25px] font-bold -tracking-[.7px] py-2">Institution</h2>

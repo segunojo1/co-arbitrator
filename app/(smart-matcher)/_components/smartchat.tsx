@@ -5,23 +5,18 @@ import { Textarea } from "@/components/ui/textarea";
 import { MessageCircleDashed } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import useAppStore from "@/store/app-store";
+import { postChat, CollectedData } from "@/services/app-services";
 
 const FIRST_QUESTION = "Nice to meet you. What is your name? 😇";
-const PERMISSION_PROMPT =
-  "May I access your personal information to help process this case?";
-const FOLLOW_UP_QUESTIONS = [
-  "What is the nature of the dispute?",
-  "What is the nationality of the party (include dual nationality if applicable)?",
-  "Amount in dispute",
-  "Cause of dispute",
-];
+// Conversation flow is driven by the API; no local permission or follow-up arrays
 
 const SmartChat = () => {
-  const [messages, setMessages] = useState([
+  const [messages, setMessages] = useState<{ id: number; role: string; content: string; type?: string }[]>([
     { id: 1, role: "bot", content: FIRST_QUESTION },
   ]);
+  
   const [input, setInput] = useState("");
-  const [awaitingPermission, setAwaitingPermission] = useState(false);
+
   const followIndex = useAppStore((s) => s.followIndex);
   const setFollowIndex = useAppStore((s) => s.setFollowIndex);
 
@@ -30,7 +25,7 @@ const SmartChat = () => {
   useEffect(() => {
     if (!containerRef.current) return;
     const el = containerRef.current;
-    
+
     el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
   }, [messages]);
 
@@ -50,65 +45,81 @@ const SmartChat = () => {
     ]);
   };
 
-  const handleSend = () => {
+  const [collected, setCollected] = useState<CollectedData>({
+    name: "",
+    nature_of_dispute: "",
+    nationality_of_parties: "",
+    amount_in_dispute: "",
+    cause_of_dispute: "",
+  });
+
+  const fieldMap = [
+    "nature_of_dispute",
+    "nationality_of_parties",
+    "amount_in_dispute",
+    "cause_of_dispute",
+  ];
+
+  const handleApiResponse = (resp: any) => {
+    if (!resp) return;
+    if (resp.response_type === "question") {
+      pushMessage({ role: "bot", content: resp.message });
+
+      const idx = fieldMap.indexOf(resp.field_to_fill);
+      if (idx >= 0) setFollowIndex(idx);
+      return;
+    }
+
+    //this for arbitrator response
+    if (resp.response_type === "match") {
+      pushMessage({ role: "bot", content: resp.message });
+      setArbitratorResponse(resp.message);
+      if (Array.isArray(resp.matches)) {
+        resp.matches.forEach((m: any) =>
+          pushMessage({ role: "bot", content: `${m.name} — ${m.institution}` }),
+        );
+      }
+    }
+    /////////
+  };
+
+  const handleSend = async () => {
     const text = input.trim();
     if (!text) return;
 
     pushMessage({ role: "user", content: text });
-    setInput("");
 
-    // If we are waiting for the user's answer to the first bot question, show permission prompt next
-    if (followIndex === null && !awaitingPermission) {
-      setTimeout(() => {
-        pushMessage({
-          role: "bot",
-          content: PERMISSION_PROMPT,
-          type: "permission",
-        });
-        setAwaitingPermission(true);
-      }, 600);
-      return;
+    const updated: CollectedData = { ...collected };
+
+    if (followIndex === null) {
+      updated.name = text;
+    } else if (followIndex !== null) {
+      const key = fieldMap[followIndex];
+      if (key) updated[key] = text;
     }
 
-    // If we are in follow-up question flow
-    if (followIndex !== null) {
-      const next = followIndex + 1;
-        if (next < FOLLOW_UP_QUESTIONS.length) {
-        setTimeout(() => {
-          pushMessage({ role: "bot", content: FOLLOW_UP_QUESTIONS[next] });
-          console.log("setting followIndex ->", next);
-          setFollowIndex(next);
-        }, 600);
-      } else {
-        // finished questions -> processing
-        setTimeout(() => {
-          pushMessage({
-            role: "bot",
-            content: "Processing your information...",
-          });
-          setTimeout(() => {
-            pushMessage({
-              role: "bot",
-              content: "Thanks — we'll review this and get back to you.",
-            });
-          }, 1200);
-        }, 800);
-        console.log("resetting followIndex -> null");
-        setFollowIndex(null);
-      }
+    setCollected(updated);
+
+    try {
+      setInput("");
+      // show temporary loading message
+      pushMessage({ role: "bot", content: "Loading...", type: "loading" });
+
+      const resp = await postChat(updated);
+      console.log("API response:", resp);
+
+      // remove any loading messages
+      setMessages((m) => m.filter((msg) => msg.type !== "loading"));
+
+      handleApiResponse(resp);
+    } catch (error) {
+
+      setMessages((m) => m.filter((msg) => msg.type !== "loading"));
+      pushMessage({ role: "bot", content: "Sorry, something went wrong." });
+      console.error("Error posting chat:", error);
     }
-  };
 
-  const handlePermission = (allowed: boolean) => {
-    // record user's choice as a user message
-    pushMessage({ role: "user", content: allowed ? "Yes" : "No" });
-    setAwaitingPermission(false);
-
-    setTimeout(() => {
-      pushMessage({ role: "bot", content: FOLLOW_UP_QUESTIONS[0] });
-      console.log("setting followIndex -> 0");
-      setFollowIndex(0);
-    }, 600);
+    // API will return the next question or final match; handled in handleApiResponse
   };
 
   return (
@@ -120,27 +131,13 @@ const SmartChat = () => {
         {messages.map((msg: any) => (
           <div
             key={msg.id}
-            className={`max-w-[267px] w-fit px-4 py-2 rounded-xl text-sm leading-relaxed ${msg.role === "user" ? "ml-auto bg-[#A684FF] rounded-br-sm rounded-[18px]" : msg.type !== "permission" ? "mr-auto bg-[#F9FAFB] rounded-bl-sm rounded-[18px] " : "text-[#9E9E9E]"}`}
+            className={`max-w-[267px] w-fit px-4 py-2 rounded-xl text-sm leading-relaxed ${
+              msg.role === "user"
+                ? "ml-auto bg-[#A684FF] rounded-br-sm rounded-[18px]"
+                : "mr-auto bg-[#F9FAFB] rounded-bl-sm rounded-[18px]"
+            }`}
           >
             {msg.content}
-            {msg.type === "permission" && (
-              <div className="mt-2 flex gap-2">
-                <Button
-                  size="sm"
-                  onClick={() => handlePermission(true)}
-                  className="bg-white hover:bg-gray-300 cursor-pointer rounded-[20px] text-[14px]/[13px] font-medium text-[#020618] py-[13.5px] px-[17px] h-full w-fit"
-                >
-                  Yes, Continue
-                </Button>
-                <Button
-                  size="sm"
-                  onClick={() => handlePermission(false)}
-                  className="bg-[#A70029] hover:bg-[#8A001F] cursor-pointer rounded-[20px] text-[14px]/[13px] font-medium text-[#FFFFFF] py-[13.5px] px-[17px] h-full w-fit"
-                >
-                  No, Exit
-                </Button>
-              </div>
-            )}
           </div>
         ))}
       </div>
@@ -156,7 +153,7 @@ const SmartChat = () => {
           onClick={handleSend}
           className="bg-white  hover:text-white text-[#020618] px-4 py-2 rounded-xl absolute text-[14px]/[20px] -tracking-[.5px] bottom-[22px] right-[22px] font-medium"
         >
-          Send Message
+          Send Messages
           <MessageCircleDashed />
         </Button>
       </div>
