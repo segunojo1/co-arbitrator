@@ -18,7 +18,7 @@ const Navbar = () => {
 
       <div className="gap-[14px] flex items-center ">
         <button className="text-[14px]/[20px] -tracking-[0.5px] font-normal pt-[9.5px] pr-[8.38px] pb-[10.5px] pl-[9.62px] rounded-lg bg-[#FFFFFF5C]">
-          <Link href="/dashboard">Smart Match Arbitrator</Link>
+          <Link href="/smart-matcher">Smart Match Arbitrator</Link>
         </button>
         <button className="text-[14px]/[20px] bg-white text-black font-medium rounded-lg py-[10px] pr-[31.5px] pl-[28.6px]">
           Sign Up
