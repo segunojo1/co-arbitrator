@@ -1,22 +1,11 @@
 "use client";
 
 import * as React from "react";
-import {
-  Frame,
-  LifeBuoy,
-  Map,
-  PieChart,
-  Send
-} from "lucide-react";
 import Home from "@/public/assets/home.svg";
 import Workspace from "@/public/assets/workspace.svg";
 import Settings from "@/public/assets/settings.svg";
-import Recordings from "@/public/assets/recordings.svg";
-
 
 import { NavMain } from "@/components/nav-main";
-import { NavProjects } from "@/components/nav-projects";
-import { NavSecondary } from "@/components/nav-secondary";
 import { NavUser } from "@/components/nav-user";
 import {
   Sidebar,
@@ -30,33 +19,27 @@ import Image from "next/image";
 
 const data = {
   user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
+    name: "Alison Eyo",
+    email: "alison.e@rayna.ui",
+    avatar: "/assets/collab.png",
   },
   navMain: [
     {
       title: "Dashboard",
-      url: "#",
+      url: "/dashboard",
       icon: Home,
-      isActive: true,
     },
     {
       title: "Workspace",
       url: "/workspace",
-      icon: Workspace
-    },
-    {
-      title: "Recordings",
-      url: "#",
-      icon: Recordings
+      icon: Workspace,
     },
     {
       title: "Settings",
       url: "#",
-      icon: Settings
+      icon: Settings,
     },
-  ]
+  ],
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {

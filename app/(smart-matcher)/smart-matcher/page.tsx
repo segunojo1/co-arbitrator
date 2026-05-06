@@ -13,7 +13,7 @@ const SmartMatcher = () => {
     console.log(followIndex);
   }, [followIndex]);
 
-    const [arbitratorResponse, setArbitratorResponse] = useState("");
+  const [arbitratorResponse, setArbitratorResponse] = useState("");
 
   return (
     <div className="min-h-screen w-full flex flex-row font-sans bg-white">
@@ -49,7 +49,7 @@ const SmartMatcher = () => {
 
                 {followIndex !== null && (
                   <ul className="flex flex-col">
-                    <li className="flex gap-[7px]">
+                    <li className="flex gap-2">
                       <Image
                         src="/assets/ai.svg"
                         alt="ai"
@@ -60,18 +60,18 @@ const SmartMatcher = () => {
                         Collating Responses (Data)
                       </p>
                     </li>
-                    <li className="flex gap-[7px]">
-                      <p className="ml-[39px] font-bold text-[20px]/[35px] -tracking-[.5px] text-[#9E9E9E]">
+                    <li className="flex gap-2">
+                      <p className="ml-10 font-bold text-[20px]/[35px] -tracking-[.5px] text-[#9E9E9E]">
                         Smart Matching
                       </p>
                     </li>
-                    <li className="flex gap-[7px]">
-                      <p className="ml-[39px] font-bold text-[20px]/[35px] -tracking-[.5px] text-[#9E9E9E]">
+                    <li className="flex gap-2">
+                      <p className="ml-10 font-bold text-[20px]/[35px] -tracking-[.5px] text-[#9E9E9E]">
                         Verifying
                       </p>
                     </li>
-                    <li className="flex gap-[7px]">
-                      <p className="ml-[39px] font-bold text-[20px]/[35px] -tracking-[.5px] text-[#9E9E9E]">
+                    <li className="flex gap-2">
+                      <p className="ml-10 font-bold text-[20px]/[35px] -tracking-[.5px] text-[#9E9E9E]">
                         Synthesising
                       </p>
                     </li>
@@ -79,8 +79,7 @@ const SmartMatcher = () => {
                 )}
               </div>
             ) : (
-                <>
-                </>
+              <></>
             )}
             {followIndex == 4 && <FoundMatch response={arbitratorResponse} />}
 
@@ -103,7 +102,7 @@ const SmartMatcher = () => {
       </div>
 
       <div className="w-[40%] bg-[#020618] relative overflow-hidden flex flex-col justify-end px-16 py-3">
-        <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-[#E12AFB4D] rounded-full blur-[120px] pointer-events-none" />
+        <div className="absolute top-[-10%] right-[-10%] w-124 h-124 bg-[#E12AFB4D] rounded-full blur-[120px] pointer-events-none" />
 
         <div className="relative z-10 ">
           <h2 className="font-instrument-serif text-[48px]/[66px] -tracking-[1.5px] text-white flex items-center gap-3">
@@ -117,12 +116,12 @@ const SmartMatcher = () => {
           {!started ? (
             <button
               onClick={() => setStarted(true)}
-              className="bg-white text-[#020618] cursor-pointer mb-[82px] hover:bg-gray-300 px-5 py-[10px] rounded-lg text-[14px]/[20px] font-medium hover:bg-gray-100 transition-colors"
+              className="bg-white text-[#020618] cursor-pointer mb-20 px-5 py-2.5 rounded-lg text-[14px]/[20px] font-medium hover:bg-gray-100 transition-colors"
             >
               Get Started
             </button>
           ) : (
-            <SmartChat />
+            <SmartChat setResponse={setArbitratorResponse} />
           )}
         </div>
       </div>

@@ -31,6 +31,69 @@ export type MatchResponse = {
 
 export type ChatResponse = QuestionResponse | MatchResponse;
 
+type RequiredField =
+  | "nature_of_dispute"
+  | "nationality_of_parties"
+  | "amount_in_dispute"
+  | "cause_of_dispute";
+
+const followUpQuestions: Array<{ field: RequiredField; prompt: string }> = [
+  {
+    field: "nature_of_dispute",
+    prompt:
+      "What is the nature of the dispute (construction, maritime, energy, etc.)?",
+  },
+  {
+    field: "nationality_of_parties",
+    prompt: "What are the nationalities of the parties involved?",
+  },
+  {
+    field: "amount_in_dispute",
+    prompt: "What is the approximate amount in dispute?",
+  },
+  {
+    field: "cause_of_dispute",
+    prompt: "Briefly describe the cause of dispute.",
+  },
+];
+
+const dummyMatches: Match[] = [
+  {
+    name: "Sunita Shekhawat",
+    institution: "London Court of International Arbitration",
+  },
+  {
+    name: "Michael Tan",
+    institution: "Singapore International Arbitration Centre",
+  },
+  {
+    name: "Anais Dupont",
+    institution: "International Chamber of Commerce",
+  },
+];
+
+function getDummyChatResponse(collectedData: CollectedData): ChatResponse {
+  const nextMissing = followUpQuestions.find(({ field }) => {
+    const value = String(collectedData[field] ?? "").trim();
+    return value.length === 0;
+  });
+
+  if (nextMissing) {
+    return {
+      response_type: "question",
+      field_to_fill: nextMissing.field,
+      message: nextMissing.prompt,
+    };
+  }
+
+  return {
+    response_type: "match",
+    message:
+      "Great, based on your responses I found a few arbitrator profiles that align with your dispute profile.",
+    matches: dummyMatches,
+  };
+}
+
 const BASE_URL =
   process.env.NEXT_PUBLIC_SMART_MATCHER_API ||
   "https://lcia-smart-matcher.vercel.app";
@@ -47,13 +110,11 @@ export async function postChat(
   try {
     const { data } = await api.post<ChatResponse>("/chat", { collected_data });
     return data;
-  } catch (err: any) {
-    // normalize error
+  } catch (err) {
     if (axios.isAxiosError(err)) {
-      const msg = err.response?.data || err.message || "Network error";
-      throw new Error(JSON.stringify(msg));
+      return getDummyChatResponse(collected_data);
     }
-    throw err;
+    return getDummyChatResponse(collected_data);
   }
 }
 

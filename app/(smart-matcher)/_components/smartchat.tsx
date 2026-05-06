@@ -10,11 +10,11 @@ import { postChat, CollectedData } from "@/services/app-services";
 const FIRST_QUESTION = "Nice to meet you. What is your name? 😇";
 // Conversation flow is driven by the API; no local permission or follow-up arrays
 
-const SmartChat = () => {
-  const [messages, setMessages] = useState<{ id: number; role: string; content: string; type?: string }[]>([
-    { id: 1, role: "bot", content: FIRST_QUESTION },
-  ]);
-  
+const SmartChat = ({ setResponse }: any) => {
+  const [messages, setMessages] = useState<
+    { id: number; role: string; content: string; type?: string }[]
+  >([{ id: 1, role: "bot", content: FIRST_QUESTION }]);
+
   const [input, setInput] = useState("");
 
   const followIndex = useAppStore((s) => s.followIndex);
@@ -73,7 +73,8 @@ const SmartChat = () => {
     //this for arbitrator response
     if (resp.response_type === "match") {
       pushMessage({ role: "bot", content: resp.message });
-      setArbitratorResponse(resp.message);
+      setResponse(resp.message);
+      setFollowIndex(4);
       if (Array.isArray(resp.matches)) {
         resp.matches.forEach((m: any) =>
           pushMessage({ role: "bot", content: `${m.name} — ${m.institution}` }),
@@ -113,7 +114,6 @@ const SmartChat = () => {
 
       handleApiResponse(resp);
     } catch (error) {
-
       setMessages((m) => m.filter((msg) => msg.type !== "loading"));
       pushMessage({ role: "bot", content: "Sorry, something went wrong." });
       console.error("Error posting chat:", error);
@@ -126,12 +126,12 @@ const SmartChat = () => {
     <div className="w-full max-w-md bg-transparent">
       <div
         ref={containerRef}
-        className="flex-1 overflow-y-auto px-4 py-3 space-y-3 max-h-[380px]"
+        className="flex-1 overflow-y-auto px-4 py-3 space-y-3 max-h-96"
       >
         {messages.map((msg: any) => (
           <div
             key={msg.id}
-            className={`max-w-[267px] w-fit px-4 py-2 rounded-xl text-sm leading-relaxed ${
+            className={`max-w-xs w-fit px-4 py-2 rounded-xl text-sm leading-relaxed ${
               msg.role === "user"
                 ? "ml-auto bg-[#A684FF] rounded-br-sm rounded-[18px]"
                 : "mr-auto bg-[#F9FAFB] rounded-bl-sm rounded-[18px]"
@@ -146,12 +146,18 @@ const SmartChat = () => {
         <Textarea
           value={input}
           onChange={(e) => setInput(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && !e.shiftKey) {
+              e.preventDefault();
+              void handleSend();
+            }
+          }}
           placeholder="Type your message..."
-          className="flex-1 bg-[#20222E] text-white h-[170px] px-4.5 text-sm rounded-[28px] outline-none w-[489px]"
+          className="flex-1 bg-[#20222E] text-white h-44 px-4.5 text-sm rounded-[28px] outline-none w-full"
         />
         <Button
           onClick={handleSend}
-          className="bg-white  hover:text-white text-[#020618] px-4 py-2 rounded-xl absolute text-[14px]/[20px] -tracking-[.5px] bottom-[22px] right-[22px] font-medium"
+          className="bg-white hover:text-white text-[#020618] px-4 py-2 rounded-xl absolute text-[14px]/[20px] -tracking-[.5px] bottom-5 right-5 font-medium"
         >
           Send Messages
           <MessageCircleDashed />

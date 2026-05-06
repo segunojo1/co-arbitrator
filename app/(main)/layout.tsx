@@ -9,12 +9,12 @@ export default function MainLayout({
 }>) {
   return (
     <SidebarProvider>
-      <div className="flex h-screen w-full overflow-hidden">
+      <div className="flex h-screen w-full overflow-hidden bg-[#000000]">
         <AppSidebar />
         <SidebarInset>
           <Header />
           <div className="no-scrollbar h-full flex-1 overflow-y-auto rounded-xl [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          {children}
+            {children}
           </div>
         </SidebarInset>
       </div>
